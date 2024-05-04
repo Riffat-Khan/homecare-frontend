@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -13,24 +13,42 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import logoTrans from "../../assets/images/logo_trans.png";
-import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import RuleIcon from "@mui/icons-material/Rule";
-import ReviewsIcon from "@mui/icons-material/Reviews";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
-import ResponsiveAppBar from "../../modals/MenuBar/MenuBar"
+import ResponsiveAppBar from "../../modals/MenuBar/MenuBar";
+import Button from "@mui/material/Button";
+import Modal from "@mui/material/Modal";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #314154",
+  boxShadow: 24,
+  p: 4,
+};
 
 const drawerWidth = 240;
-const iconArray = [
-  <DashboardIcon />,
-  <RuleIcon />,
-  <MonitorHeartIcon />,
-  <ReviewsIcon />,
-];
 const IconArray = [<SettingsIcon />, <LogoutIcon />];
 
-export default function PermanentDrawerLeft({ heading, screen }) {
+export default function PermanentDrawerLeft({  SideBarContent, heading, screen , TopiconArray }) {
+  const [isSignoutModalOpen, setSignoutModalOpen] = React.useState(false);
+
+  const handleSignoutClick = () => {
+    setSignoutModalOpen(true);
+  };
+
+  const handleSignoutConfirm = () => {
+    setSignoutModalOpen(false);
+  };
+
+  const handleSignoutCancel = () => {
+    setSignoutModalOpen(false);
+  };
+
   return (
     <Box>
       <CssBaseline />
@@ -61,16 +79,11 @@ export default function PermanentDrawerLeft({ heading, screen }) {
         <img className="" src={logoTrans} alt="logo" />
         <Toolbar />
         <List sx={{ marginTop: "-50px", color: "white" }}>
-          {[
-            { text: "DASHBOARD", link: "/profile-dashboard" },
-            { text: "ISSUES", link: "/profile-issues" },
-            { text: "VITALS", link: "/profile-vitals" },
-            { text: "REVIEWS", link: "/profile-reviews" },
-          ].map(({ text, link }, index) => (
+          {SideBarContent.map(({ text, link }, index) => (
             <ListItem key={text} disablePadding>
               <ListItemButton component={Link} to={link}>
                 <ListItemIcon sx={{ color: "white" }} key={index}>
-                  {iconArray[index % iconArray.length]}
+                  {TopiconArray[index % TopiconArray.length]}
                 </ListItemIcon>
                 <ListItemText primary={text} />
               </ListItemButton>
@@ -78,18 +91,63 @@ export default function PermanentDrawerLeft({ heading, screen }) {
           ))}
         </List>
         <Divider sx={{ backgroundColor: "white" }} />
-        <List sx={{ color: "white" }}>
-          {["Setting", "Signout"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon sx={{ color: "white" }} key={index}>
-                  {IconArray[index % IconArray.length]}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+        <React.Fragment>
+          <List sx={{ color: "white" }}>
+            {["Setting", "Signout"].map((text, index) => (
+              <ListItem key={text} disablePadding>
+                {text === "Setting" ? (
+                  <ListItemButton component={Link} to="/profile-setting">
+                    <ListItemIcon sx={{ color: "white" }} key={index}>
+                      {IconArray[index % IconArray.length]}
+                    </ListItemIcon>
+                    <ListItemText primary={text} />
+                  </ListItemButton>
+                ) : (
+                  <ListItemButton onClick={handleSignoutClick}>
+                    <ListItemIcon sx={{ color: "white" }} key={index}>
+                      {IconArray[index % IconArray.length]}
+                    </ListItemIcon>
+                    <ListItemText primary={text} />
+                  </ListItemButton>
+                )}
+              </ListItem>
+            ))}
+          </List>
+
+          <Modal
+            open={isSignoutModalOpen}
+            onClose={() => setSignoutModalOpen(false)}
+            aria-labelledby="modal-title"
+            aria-describedby="modal-description"
+          >
+            <Box sx={{ ...style, width: 500 }}>
+              <Typography id="modal-title" variant="h6" component="h2">
+                Sign Out
+              </Typography>
+              <Typography id="modal-description" sx={{ mt: 2 }}>
+                Are you sure you want to sign out?
+              </Typography>
+              <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+                <Button
+                  onClick={handleSignoutConfirm}
+                  sx={{ backgroundColor: "#d3d3d3" }}
+                  color="primary"
+                  variant="contained"
+                >
+                  Yes
+                </Button>
+                <Button
+                  onClick={handleSignoutCancel}
+                  color="secondary"
+                  variant="contained"
+                  sx={{ ml: 2, backgroundColor: "#314154" }}
+                >
+                  Cancel
+                </Button>
+              </Box>
+            </Box>
+          </Modal>
+        </React.Fragment>
       </Drawer>
       <Box
         component="main"
@@ -101,7 +159,12 @@ export default function PermanentDrawerLeft({ heading, screen }) {
       >
         <Toolbar />
         <Typography
-          sx={{ color: "#314154", fontSize: "35px", fontWeight: "bold" }}
+          sx={{
+            color: "#314154",
+            fontSize: "35px",
+            fontWeight: "bold",
+            textAlign: "center",
+          }}
         >
           {heading}
         </Typography>

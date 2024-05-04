@@ -16,14 +16,15 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default function ResponsiveGrid() {
   return (
+    <div className="pr-80">
     <Box sx={{ flexGrow: 1 }}>
       <Grid
         container
-        spacing={{ xs: 2, md: 3 }}
-        columns={{ xs: 4, sm: 8, md: 21 }}
+        spacing={{ xs: 10, md: 12 }}
+        columns={{ xs: 4, sm: 8, md: 12 }}
       >
-        {Array.from(Array(5)).map((_, index) => (
-          <Grid xs={2} sm={4} md={4} key={index}>
+        {Array.from(Array(3)).map((_, index) => (
+          <Grid sx={{display:"flex" , alignItems:"center"  }} xs={2} sm={4} md={4} key={index}>
             {index === 0 && (
               <BasicCard heading={"Accepted"} content={<ArcDesign />} />
             )}
@@ -33,15 +34,10 @@ export default function ResponsiveGrid() {
             {index === 2 && (
               <BasicCard heading={"Completed"} content={<ArcDesign />} />
             )}
-            {index === 3 && (
-              <BasicCard heading={"Pending"} content={<ArcDesign />} />
-            )}
-            {index === 4 && (
-              <BasicCard heading={"Rejected"} content={<ArcDesign />} />
-            )}
           </Grid>
         ))}
       </Grid>
     </Box>
+    </div>
   );
 }
